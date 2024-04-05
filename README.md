@@ -2,6 +2,10 @@
 
 This program allows users to simulate keypresses on a keyboard. This will currently only work for Windows, as it depends on the windows virtual key codes. For more information check out the Microsoft page for keyboard input: [keybd_event function](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-keybd_event), [virtual key codes](https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes)
 
+## Installation
+
+`go get github.com/JaiiR320/keyboard`
+
 ## Features
 
 Simluate keystrokes using simple syntax. 
