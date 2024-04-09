@@ -23,10 +23,17 @@ package main
 func main(){
     // create a new keyboard
     kb := keyboard.New(25) // add the inter-key delay time
-    
+
+    // you can also set the inter key delay like this
+    kb.InterKeyDelay = 25
+
+    // the between-command delay
+    // works for "Hit" and "Write"
+    kb.NextCommandDelay = 1000
+
     // simulates a "tap" of the tab button
     kb.Hit(keyboard.VK_TAB)
-
+    // pauses for 1000ms based on NextCommandDelay
     // simulates typing a specific character
     kb.Simulate('@')
 

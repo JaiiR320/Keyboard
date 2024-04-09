@@ -15,7 +15,8 @@ var dll = syscall.NewLazyDLL("user32.dll")
 var procKeyBd = dll.NewProc("keybd_event")
 
 type Keyboard struct {
-	InterKeyDelay int
+	InterKeyDelay    int
+	NextCommandDelay int
 }
 
 func New(inter int) *Keyboard {
@@ -49,10 +50,11 @@ func (kb *Keyboard) Lift(key int) error {
 func (kb *Keyboard) Hit(key int) error {
 	kb.Hold(key)
 	kb.Lift(key)
+	time.Sleep(time.Duration(kb.NextCommandDelay) * time.Millisecond)
 	return nil
 }
 
-func (kb *Keyboard) Simulate(c rune) error {
+func (kb *Keyboard) simulate(c rune) error {
 	keys, ok := Symbols[c]
 	if !ok {
 		return fmt.Errorf("symbol not found: %c", c)
@@ -61,7 +63,8 @@ func (kb *Keyboard) Simulate(c rune) error {
 		kb.Hold(keys[1])
 	}
 
-	kb.Hit(keys[0])
+	kb.Hold(keys[0])
+	kb.Lift(keys[0])
 
 	if len(keys) == 2 {
 		kb.Lift(keys[1])
@@ -72,11 +75,12 @@ func (kb *Keyboard) Simulate(c rune) error {
 
 func (kb *Keyboard) Write(input string) error {
 	for _, c := range input {
-		if err := kb.Simulate(c); err != nil {
+		if err := kb.simulate(c); err != nil {
 			log.Println(err)
 		}
 		time.Sleep(time.Duration(kb.InterKeyDelay) * time.Millisecond)
 	}
+	time.Sleep(time.Duration(kb.NextCommandDelay) * time.Millisecond)
 	return nil
 }
 
